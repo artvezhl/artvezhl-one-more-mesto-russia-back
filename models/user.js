@@ -24,6 +24,21 @@ const userSchema = new mongoose.Schema({
     },
     required: [true, 'Поле "аватар" не является валидным'],
   },
+  email: {
+    type: String,
+    validate: {
+      validator(email) {
+        return validator.isEmail(email);
+      },
+    },
+    required: [true, 'Поле "email" не является валидным'],
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Поле "password" не является валидным'],
+    minlength: 8,
+  }
 });
 
 // создание модели пользователя
