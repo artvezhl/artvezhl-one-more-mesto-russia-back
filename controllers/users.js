@@ -23,13 +23,13 @@ module.exports.getUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
     if (user === null) {
-      res.status(404).send({ message: `Пользователь с номером ${req.params.userId} отсутствует!` });
+      res.status(404).send({ message: `Пользователь с номером ${req.params.userId} отсутствует` });
       return;
     }
     res.send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      res.status(400).send({ message: `Пользователь с номером ${req.params.userId} отсутствует!` });
+      res.status(400).send({ message: `Пользователь с номером ${req.params.userId} отсутствует` });
       return;
     }
     res.status(500).send({ message: 'На сервере произошла ошибка' });

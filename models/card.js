@@ -5,9 +5,9 @@ const validator = require('validator');
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
-    minlength: [2, 'В поле "Имя" должно быть не менее 2 символов!'],
-    maxlength: [30, 'В поле "Имя" должно быть не более 30 символов!'],
-    required: [true, 'Поле "Имя" не является валидным! В нем должно быть от 2 до 30 символов.'],
+    minlength: [2, 'В поле "Имя" должно быть не менее 2 символов'],
+    maxlength: [30, 'В поле "Имя" должно быть не более 30 символов'],
+    required: [true, 'Поле "Имя" не является валидным. В нем должно быть от 2 до 30 символов'],
   },
   link: {
     type: String,
@@ -16,7 +16,7 @@ const cardSchema = new mongoose.Schema({
         return validator.isURL(link);
       },
     },
-    required: [true, 'В данном поле должна быть ссылка!'],
+    required: [true, 'В данном поле должна быть ссылка'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
