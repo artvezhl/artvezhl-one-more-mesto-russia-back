@@ -90,8 +90,12 @@ module.exports.login = (req, res) => {
         'some-secret-key',
         { expiresIn: '7d'}
       );
-      // TODO write JWT to htmlOnly cookie
-      res.send({ token });
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true
+        })
+        .end();
     })
     .catch((err) => {
       res

@@ -11,16 +11,9 @@ module.exports = (req, res, next) => {
   const token = authorization.replace('Bearer ', '');
   let payload;
 
-  console.log('____________________________________________');
-  console.log(token);
-  console.log('____________________________________________');
-
   try {
     // TODO найти на что надо заменить some-secret-key
     payload = jwt.verify(token, 'some-secret-key');
-    console.log('____________________________________________');
-    console.log(payload);
-    console.log('____________________________________________');
   } catch (err) {
     return res
       .status(401)
