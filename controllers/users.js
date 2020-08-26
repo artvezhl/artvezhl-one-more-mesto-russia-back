@@ -1,4 +1,3 @@
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
@@ -38,6 +37,7 @@ module.exports.getUser = async (req, res) => {
   }
 };
 
+// TODO неверная ошибка (500) при создании пользователя с дублирующей почтой
 // создание нового пользователя
 module.exports.createUser = async (req, res) => {
   try {
@@ -82,7 +82,8 @@ module.exports.login = (req, res) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
-        { _id: '5f4410c25e6620d252da6f94' },
+        // TODO возможно надо заменить user._id на статический
+        { _id: user._id },
         'some-secret-key',
         { expiresIn: '7d'}
       );

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 // создание экземпляра схемы с необходимыми полями
 const userSchema = new mongoose.Schema({
@@ -43,7 +44,7 @@ const userSchema = new mongoose.Schema({
 
 // TODO rebuild to async/await
 // метод для проверки почты и пароля
-userSchema.static.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email })
     .then((user) => {
       if(!user) {
