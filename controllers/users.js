@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const userErrorsHandler = (err, res) => {
@@ -73,13 +74,20 @@ module.exports.updateAvatar = async (req, res) => {
   }
 };
 
+// TODO rebuild to async/await
 // контроллер login
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-
+      const token = jwt.sign(
+        { _id: '5f4410c25e6620d252da6f94' },
+        'some-secret-key',
+        { expiresIn: '7d'}
+      );
+      // TODO write JWT to htmlOnly cookie
+      res.send({ token });
     })
     .catch((err) => {
       res
