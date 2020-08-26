@@ -7,7 +7,8 @@ const app = express();
 const users = require('./routes/users.js');
 const cards = require('./routes/cards.js');
 const unfoundPage = require('./middlewares/unfound.js');
-const { login, createUser } = require('./controllers/users')
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,17 +22,11 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-// Middleware
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5f2c225dd25f417c8b0dbafe',
-  };
-
-  next();
-});
-
 app.post('/signin', login);
 app.post('/signup', createUser);
+
+// авторизация
+app.use(auth);
 
 // роуты к разным путям и несуществующему пути
 app.use('/users', users);

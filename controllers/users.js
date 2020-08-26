@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
@@ -42,6 +43,8 @@ module.exports.getUser = async (req, res) => {
 module.exports.createUser = async (req, res) => {
   try {
     const { name, about, avatar, email } = req.body;
+    // TODO нужна дополнительная проверка на длину пароля
+    //  https://yandex-students.slack.com/archives/GSEU66VNV/p1597943100017500?thread_ts=1597942917.017400&cid=GSEU66VNV
     const password = await bcrypt.hash(req.body.password, 10);
     const newUser = await User.create({ name, about, avatar, email, password });
     res.send(newUser);
