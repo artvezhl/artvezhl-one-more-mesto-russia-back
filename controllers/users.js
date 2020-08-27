@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const userErrorsHandler = (err, res) => {
   if (err.name === 'ValidationError') {
     res.status(400).send(err.message);
@@ -42,11 +44,15 @@ module.exports.getUser = async (req, res) => {
 // создание нового пользователя
 module.exports.createUser = async (req, res) => {
   try {
-    const { name, about, avatar, email } = req.body;
+    const {
+      name, about, avatar, email,
+    } = req.body;
     // TODO нужна дополнительная проверка на длину пароля
     //  https://yandex-students.slack.com/archives/GSEU66VNV/p1597943100017500?thread_ts=1597942917.017400&cid=GSEU66VNV
     const password = await bcrypt.hash(req.body.password, 10);
-    const newUser = await User.create({ name, about, avatar, email, password });
+    const newUser = await User.create({
+      name, about, avatar, email, password,
+    });
     res.send(newUser);
   } catch (err) {
     userErrorsHandler(err, res);
@@ -87,19 +93,20 @@ module.exports.login = (req, res) => {
       const token = jwt.sign(
         // TODO возможно надо заменить user._id на статический
         { _id: user._id },
-        'some-secret-key',
-        { expiresIn: '7d'}
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
       );
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
-          httpOnly: true
+          httpOnly: true,
+          sameSite: true,
         })
-        .end();
+        .end('Token sended');
     })
     .catch((err) => {
       res
         .status(401)
-        .send({ message: err.message })
-    })
-}
+        .send({ message: err.message });
+    });
+};

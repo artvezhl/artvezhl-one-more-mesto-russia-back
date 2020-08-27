@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -12,7 +14,7 @@ const auth = require('./middlewares/auth');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// TODO создать новый репозиторий для проекта
+
 // TODO проверить Eslint
 // подключение к Mongo
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -24,6 +26,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.post('/signin', login);
 app.post('/signup', createUser);
+
+app.use(cookieParser());
 
 // авторизация
 app.use(auth);
