@@ -28,10 +28,17 @@ module.exports.createCard = async (req, res) => {
 // удаление карточки
 module.exports.removeCard = async (req, res) => {
   try {
-    const cardToRemove = await Card.findByIdAndRemove(req.params.cardId);
-    if (cardToRemove === null) {
-      res.status(404).send({ message: `Карточка с номером ${req.params.cardId} отсутствует` });
-      return;
+    const card = await Card.findById(req.params.cardId);
+    let cardToRemove;
+    // TODO уточнить в чате про эту проверку
+    if (req.user._id.toString() !== card.owner.toString()) {
+      res.status(401).send({ message: `У Вас отсутствуют права на удаление карточки ${req.params.cardId}` });
+    } else {
+      cardToRemove = await Card.findByIdAndRemove(req.params.cardId);
+      if (cardToRemove === null) {
+        res.status(404).send({ message: `Карточка с номером ${req.params.cardId} отсутствует` });
+        return;
+      }
     }
     res.send(cardToRemove);
   } catch (err) {

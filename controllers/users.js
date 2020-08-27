@@ -76,7 +76,7 @@ module.exports.updateAvatar = async (req, res) => {
   try {
     const { avatar } = req.body;
     const updatedAvatar = await
-    User.findOneAndUpdate(req.user._id, { avatar }, { runValidators: true, new: true });
+    User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true, new: true });
     res.send(updatedAvatar);
   } catch (err) {
     userErrorsHandler(err, res);

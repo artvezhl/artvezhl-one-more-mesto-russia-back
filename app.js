@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // TODO проверить Eslint
+// TODO проработать вопросы безопасности приложения как указано в обучении
 // подключение к Mongo
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,

@@ -39,6 +39,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Поле "password" не является валидным'],
     minlength: 8,
+    select: false,
   },
 });
 

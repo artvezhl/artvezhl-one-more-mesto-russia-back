@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    // TODO найти на что надо заменить some-secret-key
     payload = jwt.verify(req.cookies.jwt, JWT_SECRET);
   } catch (err) {
     return res
