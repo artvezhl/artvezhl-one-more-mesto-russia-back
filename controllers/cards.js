@@ -30,7 +30,6 @@ module.exports.removeCard = async (req, res) => {
   try {
     const card = await Card.findById(req.params.cardId);
     let cardToRemove;
-    // TODO уточнить в чате про эту проверку
     if (req.user._id.toString() !== card.owner.toString()) {
       res.status(401).send({ message: `У Вас отсутствуют права на удаление карточки ${req.params.cardId}` });
     } else {

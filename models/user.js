@@ -33,34 +33,28 @@ const userSchema = new mongoose.Schema({
       },
     },
     required: [true, 'Поле "email" не является валидным'],
-    unique: true,
+    unique: [true, 'Пользователь с таким email уже зарегистрирован'],
   },
   password: {
     type: String,
-    required: [true, 'Поле "password" не является валидным'],
-    minlength: 8,
+    required: [true, 'В поле "password" должно быть не менее 8 символов'],
     select: false,
   },
 });
 
-// TODO rebuild to async/await
 // метод для проверки почты и пароля
-userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email })
-    .then((user) => {
-      if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
+userSchema.statics.findUserByCredentials = async function (email, password) {
+  const foundUser = await this.findOne({ email }).select('+password');
+  if (!foundUser) {
+    return Promise.reject(new Error('Неправильные почта или пароль'));
+  }
 
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            return Promise.reject(new Error('Неправильные почта или пароль'));
-          }
+  const comparesPassword = await bcrypt.compare(password, foundUser.password);
+  if (!comparesPassword) {
+    return Promise.reject(new Error('Неправильные почта или пароль'));
+  }
 
-          return user;
-        });
-    });
+  return foundUser;
 };
 
 // создание модели пользователя
