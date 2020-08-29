@@ -3,18 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
-
-const userErrorsHandler = (err, res) => {
-  if (err.name === 'ValidationError') {
-    res.status(400).send(err.message);
-    return;
-  }
-  if (err.message.startsWith('E11000')) {
-    res.status(400).send({ message: 'Пользователь с такой почтой уже есть зарегистрирован' });
-    return;
-  }
-  res.status(500).send({ message: 'На сервере произошла ошибка' });
-};
+const userErrorsHandler = require('../utils/helpers');
 
 // возврат всех пользователей
 module.exports.getUsers = async (req, res) => {
@@ -51,13 +40,28 @@ module.exports.createUser = async (req, res) => {
       name, about, avatar, email,
     } = req.body;
     let password;
-    if (req.body.password.length > 7) {
+    let passwordLength;
+    if (req.body.password) {
+      passwordLength = req.body.password.split(' ').join('');
+    }
+    if (passwordLength > 7) {
       password = await bcrypt.hash(req.body.password, 10);
     }
     const newUser = await User.create({
       name, about, avatar, email, password,
     });
-    res.send(newUser);
+
+    const data = (object) => {
+      const {
+        name, about, avatar, email, ...rest
+      } = object;
+
+      return {
+        name, about, avatar, email,
+      };
+    };
+
+    res.send(data(newUser));
   } catch (err) {
     userErrorsHandler(err, res);
   }
