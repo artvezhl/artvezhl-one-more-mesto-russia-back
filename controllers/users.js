@@ -42,7 +42,7 @@ module.exports.createUser = async (req, res) => {
     let password;
     let passwordLength;
     if (req.body.password) {
-      passwordLength = req.body.password.split(' ').join('');
+      passwordLength = req.body.password.split(' ').join('').length;
     }
     if (passwordLength > 7) {
       password = await bcrypt.hash(req.body.password, 10);
